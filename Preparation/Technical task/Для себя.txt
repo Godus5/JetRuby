@@ -1,0 +1,11 @@
+Для 2 части технического задания:
+- команда для создание рельсового проекта с базой данных PostgreSQL:
+
+rails new CargoTransportation -d postgresql
+
+- команда для генерации ресурсов ActiveAdmin без пользователей:
+
+rails g active_admin:install --skip-users
+
+
+
