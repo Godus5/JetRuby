@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 ActiveAdmin.register Request do
+  actions :index, :show, :new, :create, :destroy
+
+  permit_params :name, :surname, :patronymic, :phone_number, :email, :weight, :length, :width, :height,
+                :point_of_departure, :destination
+
   index do
+    selectable_column
     column :name
     column :email
     column :point_of_departure
@@ -28,38 +34,48 @@ ActiveAdmin.register Request do
     end
   end
 
-  controller do
-    def new
-      @request = Request.new
+  form do |f|
+    f.inputs do
+      f.input :name
+      f.input :surname
+      f.input :patronymic
+      f.input :phone_number
+      f.input :email
+      f.input :weight
+      f.input :length
+      f.input :width
+      f.input :height
+      f.input :point_of_departure
+      f.input :destination      
     end
+    f.actions
+  end
 
-    def create
-      @request = Request.new
-      @request.price = 0
-      @request.distance = Geocoder::Calculations.distance_between(Geocoder.coordinates(@request.point_of_departure),
-                                                                  Geocoder.coordinates(@request.destination), units: :km).round(2)
-      @request.length = @request.length / 100.0
-      @request.width = @request.width / 100.0
-      @request.height = @request.height / 100.0
-      if (@request.length * @request.width * @request.height) < 1
-        @request.price += @request.distance
-      elsif (@request.length * @request.width * @request.height) > 1
-        @request.price += if @request.weight <= 10
-                            2 * @request.distance
-                          else
-                            3 * @request.distance
-                          end
-      end
+  controller do
+    
+    def create      
+      @request = Request.new(permitted_params[:request])      
       if @request.save
-        redirect_to @request
+        @request.price = 0
+        @request.distance = Geocoder::Calculations.distance_between(Geocoder.coordinates(@request.point_of_departure),
+                                                                    Geocoder.coordinates(@request.destination), units: :km).round(2)
+        @request.length = @request.length / 100.0
+        @request.width = @request.width / 100.0
+        @request.height = @request.height / 100.0
+        if (@request.length * @request.width * @request.height) < 1
+          @request.price += @request.distance
+        elsif (@request.length * @request.width * @request.height) > 1
+          @request.price += if @request.weight <= 10
+                              2 * @request.distance
+                            else
+                              3 * @request.distance
+                            end
+        end
+        @request.save
+        redirect_to admin_request_path(@request.id)
       else
         render :new, status: :unprocessable_entity
       end
     end
   end
-
-  actions :index, :show, :new, :create, :destroy
-
-  permit_params :name, :surname, :patronymic, :phone_number, :email, :weight, :length, :width, :height,
-                :point_of_departure, :destination
 end
