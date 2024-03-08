@@ -11,6 +11,7 @@ class Request < ApplicationRecord
   validates :phone_number, presence: true, length: { is: 11 }
   validates :point_of_departure, presence: true
   validates :destination, presence: true
+  validates :email, presence: true
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[created_at destination distance email height id id_value length name patronymic
