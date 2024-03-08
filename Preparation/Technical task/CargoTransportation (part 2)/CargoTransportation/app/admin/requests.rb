@@ -21,7 +21,7 @@ ActiveAdmin.register Request do
       row :name
       row :surname
       row :patronymic
-      row :phone_number
+      row :phone_number, as: Integer
       row :email
       row :weight
       row :length
@@ -46,15 +46,14 @@ ActiveAdmin.register Request do
       f.input :width
       f.input :height
       f.input :point_of_departure
-      f.input :destination      
+      f.input :destination
     end
     f.actions
   end
 
   controller do
-    
-    def create      
-      @request = Request.new(permitted_params[:request])      
+    def create
+      @request = Request.new(permitted_params[:request])
       if @request.save
         @request.price = 0
         @request.distance = Geocoder::Calculations.distance_between(Geocoder.coordinates(@request.point_of_departure),

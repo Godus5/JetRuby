@@ -8,7 +8,7 @@ class Request < ApplicationRecord
   validates :name, presence: true
   validates :surname, presence: true
   validates :patronymic, presence: true
-  validates :phone_number, presence: true, length: { is: 11 }
+  validates :phone_number, presence: true, length: { is: 11 }, numericality: { only_integer: true }
   validates :point_of_departure, presence: true
   validates :destination, presence: true
   validates :email, presence: true
