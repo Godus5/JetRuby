@@ -54,7 +54,7 @@ ActiveAdmin.register Request do
   controller do
     def create
       @request = Request.new(permitted_params[:request])
-      if @request.save
+      if @request.valid?
         @request.price = 0
         @request.distance = Geocoder::Calculations.distance_between(Geocoder.coordinates(@request.point_of_departure),
                                                                     Geocoder.coordinates(@request.destination), units: :km).round(2)
